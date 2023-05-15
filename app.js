@@ -11,12 +11,12 @@ const client1 = new Client({
 const client2 = new Client({
     authStrategy: new LocalAuth({ clientId: "client-two" })
 });
-
+/*
 const client3 = new Client({
     authStrategy: new LocalAuth({ clientId: "client-three" })
 });
  
-
+*/
 client1.on('qr', qr => {
     qrcode.generate(qr, {small: true});
 });
@@ -32,7 +32,7 @@ client2.on('qr', qr => {
 client2.on('ready', () => {
     console.log('WhatsApp 2 esta Conectado!');
 });
-
+/*
 client3.on('qr', qr => {
     qrcode.generate(qr, {small: true});
 });
@@ -40,7 +40,7 @@ client3.on('qr', qr => {
 client3.on('ready', () => {
     console.log('WhatsApp 3 esta Conectado!');
 });
-
+*/
 
 
 client1.initialize();
@@ -92,7 +92,7 @@ app.post('/send-students', (req, res) => {
         res.send('Sin autorización');
     }
 });
-
+/*
 app.post('/send-parents', (req, res) => {
 
     let pass = req.body.pass;
@@ -110,7 +110,7 @@ app.post('/send-parents', (req, res) => {
         res.send('Sin autorización');
     }
 });
-
+*/
 const port = process.env.port || 3001;
 
 app.listen(port, () => console.log(`Escuchando en puerto ${port}....`));
