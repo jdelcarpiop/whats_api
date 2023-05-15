@@ -44,23 +44,23 @@ const number = "981257900";
 const msg = "Hola Mundo";
 
 
-app.get('/send', (req, res) => {
+/* app.get('/send', (req, res) => {
     let chatId = country_code + number + "@c.us";
 
     client.sendMessage(chatId, msg);
     res.send('Node Js Api');
-}); 
+});  */
 
 const password = '39d5a072e22cf42412dcaea29218fb2e'
 
 
-app.get('/send/:pass/:phone/:msg', (req, res) => {
+app.post('/send', (req, res) => {
 
-    let pass = req.params.pass;
-
+    let pass = req.body.pass;
+    console.log(pass);
     if(password == pass){
-        let chatId = req.params.phone + "@c.us";
-        client.sendMessage(chatId, req.params.msg)
+        let chatId = req.body.phone + "@c.us";
+        client.sendMessage(chatId, req.body.msg)
                                     .then(response => {
                                         if(response.id.fromMe) {
                                             res.send('Mensaje enviado');
