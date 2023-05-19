@@ -10,39 +10,30 @@ app.get('/testApi', (req, res) => {
 
 const password = '39d5a072e22cf42412dcaea29218fb2e'
 
-app.post('/send-public', (req, res) => {
-
+app.post('/send', (req, res) => {
     let pass = req.body.pass;
     if (password == pass) {
-        let chatId = req.body.phone + "@c.us";
-        client1.sendMessage(chatId, req.body.msg)
-            .then(response => {
-                if (response.id.fromMe) {
-                    res.send('Mensaje enviado');
+        client.isRegisteredUser(req.body.phone)
+            .then((isRegistered) => {
+                if (isRegistered) {
+                    let chatId = req.body.phone + "@c.us";
+                    client.sendMessage(chatId, req.body.msg)
+                        .then(response => {
+                            if (response.id.fromMe) {
+                                res.send('send-success');
+                            } else {
+                                res.send('send-error');
+                            }
+                        });
                 } else {
-                    res.send('error');
+                    res.send(`verified-failed: ${req.body.phone}`);
                 }
+            })
+            .catch((error) => {
+                console.error(`verified-error: ${req.body.phone} - ${error}`);
             });
     } else {
-        res.send('Sin autorización');
-    }
-});
-
-app.post('/send-students', (req, res) => {
-
-    let pass = req.body.pass;
-    if (password == pass) {
-        let chatId = req.body.phone + "@c.us";
-        client2.sendMessage(chatId, req.body.msg)
-            .then(response => {
-                if (response.id.fromMe) {
-                    res.send('Mensaje enviado');
-                } else {
-                    res.send('error');
-                }
-            });
-    } else {
-        res.send('Sin autorización');
+        res.send('auth-failed');
     }
 });
 
@@ -54,33 +45,17 @@ const qrcode = require('qrcode-terminal');
 
 const { Client, LocalAuth } = require('whatsapp-web.js');
 
-const client1 = new Client({
-    authStrategy: new LocalAuth({ clientId: "client-one" })
+const client = new Client({
+    authStrategy: new LocalAuth()
 });
 
-const client2 = new Client({
-    authStrategy: new LocalAuth({ clientId: "client-two" })
-});
+client.initialize();
 
-client1.initialize();
-
-client1.on('qr', qr => {
-    console.log('WhatsApp 1 QR');
+client.on('qr', qr => {
+    console.log('WhatsApp QR');
     qrcode.generate(qr, { small: true });
 });
 
-client1.on('ready', () => {
-    console.log('WhatsApp 1 esta Conectado!');
+client.on('ready', () => {
+    console.log('WhatsApp esta Conectado!');
 });
-
-client2.initialize();
-
-client2.on('qr', qr => {
-    console.log('WhatsApp 2 QR');
-    qrcode.generate(qr, { small: true });
-});
-
-client2.on('ready', () => {
-    console.log('WhatsApp 2 esta Conectado!');
-});
-
